@@ -17,33 +17,40 @@ def getEmptyArray(size):
 	return cells
 
 def transitionCoordinate(x,y,direction,size):
+	size = size - 1
 	return {
 		0:{'x':x,'y':y},
-		1:{'x':size-y,'y':x},
-		2:{'x':size-x,'y':y},
+		1:{'x':size-y,'y':size-x},
+		2:{'x':x,'y':size-y},
 		3:{'x':y,'y':x}
 	}[direction]
 
-def traversalCells(data,size,callback,direction=0):
+def traversalCells(data,size,callback=None,direction=0):
+	cells = getEmptyArray(size)
 	keyX = 0
 	keyY = 0
 	while keyX < size:
 		keyY = 0
 		while keyY < size:
 			tempCoordinate = transitionCoordinate(x=keyX,y=keyY,direction=direction,size=size)
-			callback({
+			tempData = {
 				'value':data[tempCoordinate['x']][tempCoordinate['y']],
 				'indexX':keyX,
 				'indexY':keyY,
 				'x':tempCoordinate['x'],
 				'y':tempCoordinate['y']
-			})
+			}
+			if callback:
+				callback(tempData)
+			cells[tempData['indexX']][tempData['indexY']] = tempData
 			keyY += 1
 		keyX += 1
+	return cells
 
 class Grid():
-	def __init__(self,size=4,perGridObject=None):
+	def __init__(self,size=4,perGridObject=None,randBaseValue=2):
 		self.size = size;
+		self.randBaseValue = randBaseValue
 		self.cells = self.fromState(perGridObject) if perGridObject else self.empty();
 
 	def fromState(self,perGridObject):
@@ -68,50 +75,74 @@ class Grid():
 		emptyList = []
 		traversalCells(data=self.cells,size=self.size,callback=callback)
 		if len(emptyList) == 0:
-			return False
-		tempData = emptyList[random.randint(0, len(emptyList))]
-		self.cells[tempData['x']][tempData['y']] = (2 if random.random() > 0.5 else 4)
+			return None
+		tempData = emptyList[random.randint(0, len(emptyList) - 1)]
+		self.cells[tempData['x']][tempData['y']] = (self.randBaseValue if random.random() > 0.3 else self.randBaseValue * 2)
+		return tempData
+
+	def isEnd(self):
+		keyX = 0
+		keyY = 0
+		while keyX < self.size:
+			keyY = 0
+			while keyY < self.size:
+				if self.cells[keyX][keyY] == 0:
+					return False
+				if keyY == self.size - 1:
+					keyY += 1
+					continue
+				if self.cells[keyX][keyY] == self.cells[keyX][keyY + 1]:
+					return False
+				if keyX == self.size - 1:
+					keyY += 1
+					continue
+				if self.cells[keyX][keyY] == self.cells[keyX + 1][keyY]:
+					return False
+				keyY += 1
+			keyX += 1
 		return True
 
 	def move(self,direction):
-		cells = self.cells
 		moveSign = False
-		tempRow = None
-		tempMoveRow = None
-		tempRowIndex = None
-		tempMoveRowIndex = None
-		def sumCallback(data):
-			if None == tempRow:
-				tempRow = []
-			tempRow.append(data)
-			if self.size == len(tempRow):
-				for tempRowIndex in tempRow:
-					if tempRowIndex > 0 and cells[tempRow[tempRowIndex - 1]['x']][tempRow[tempRowIndex - 1]['y']] == cells[tempRow[tempRowIndex]['x']][tempRow[tempRowIndex]['y']] and cells[tempRow[tempRowIndex]['x']][tempRow[tempRowIndex]['y']] != 0:
-						cells[tempRow[tempRowIndex - 1]['x']][tempRow[tempRowIndex - 1]['y']] *= 2
-						cells[tempRow[tempRowIndex]['x']][tempRow[tempRowIndex]['y']] = 0
-				tempRow = None
-		def moveCallback(data):
-			if None == tempRow:
-				tempRow = []
-			tempRow.append(data)
-			if self.size == len(tempRow):
-				tempRowIndex = 0
-				tempMoveRowIndex = 0
-				tempMoveRow = []
-				while tempRowIndex < self.size:
-					if tempRowIndex < len(tempRow) and tempRow[tempRowIndex]['value'] > 0:
-						tempMoveRow.push(tempRow[tempRowIndex]['value'])
-					else:
-						tempMoveRow.push(0)
-					tempRowIndex += 1
-				tempRowIndex = 0
-				while tempRowIndex < self.size:
-					cells[tempRow[tempRowIndex]['x']][tempRow[tempRowIndex]['y']] = tempMoveRow.push(tempRowIndex)
-					tempRowIndex += 1
-				tempRow = None
-		traversalCells(data=self.cells,size=self.size,callback=sumCallback,direction=direction)
-		tempRow = None
-		tempRowIndex = None
-		traversalCells(data=self.cells,size=self.size,callback=moveCallback,direction=direction)
-		self.cells = cells
-		return {'moveSign':moveSign}
+		traversalData = traversalCells(data=self.cells,size=self.size,direction=direction)
+		#print('traversalData',traversalData)
+		keyX = 0
+		keyY = 0
+		tempData = None
+		while keyX < self.size:
+			keyY = 0
+			tempData = None
+			while keyY < self.size:
+				if tempData != None and tempData['value'] == traversalData[keyX][keyY]['value']:
+					moveSign = True
+					tempData['value'] *= 2
+					traversalData[keyX][keyY]['value'] = 0
+					tempData = None
+				if traversalData[keyX][keyY]['value'] > 0:
+					tempData = traversalData[keyX][keyY]
+				keyY += 1
+			keyX += 1
+		keyX = 0
+		while keyX < self.size:
+			keyY = 0
+			tempData = None
+			while keyY < self.size:
+				if tempData != None and traversalData[keyX][keyY]['value'] > 0:
+					moveSign = True
+					tempData['value'] = traversalData[keyX][keyY]['value']
+					traversalData[keyX][keyY]['value'] = 0
+					tempData = None
+					keyY = 0
+				if tempData == None and traversalData[keyX][keyY]['value'] == 0:
+					tempData = traversalData[keyX][keyY]
+				keyY += 1
+			keyX += 1
+		keyX = 0
+		while keyX < self.size:
+			keyY = 0
+			while keyY < self.size:
+				self.cells[traversalData[keyX][keyY]['x']][traversalData[keyX][keyY]['y']] = traversalData[keyX][keyY]['value']
+				keyY += 1
+			keyX += 1
+		#print('moveCell',self.cells)
+		return {'moveSign':moveSign,'isEnd':self.isEnd()}

@@ -3,15 +3,18 @@
 
 from component.gui import GUI
 from component.game import Game
+from component.simpleAI import SimpleAI
 import time, threading
 import random,sys
 
 class application():
 	def __init__(self,size=4,randBaseValue=2):
 		self.size = size
-		self.game = Game(size=self.size,randBaseValue=randBaseValue)
+		self.randBaseValue = randBaseValue
+		self.game = Game(size=self.size,randBaseValue=self.randBaseValue)
 		self.autoRunSign = False
-		self.gui = GUI(size=self.size,handleObject={'restart':self.restartHandle,'move':self.moveHandle,'autoRun':self.autoRunHandle,'autoRunStop':self.autoRunStopHandle})
+		self.aiRunSign = False
+		self.gui = GUI(size=self.size,handleObject={'restart':self.restartHandle,'move':self.moveHandle,'autoRun':self.autoRunHandle,'autoRunStop':self.autoRunStopHandle,'aiRun':self.aiRunHandle})
 
 	def moveHandle(self,direction):
 		moveResult = self.game.move(direction)
@@ -30,6 +33,20 @@ class application():
 	def autoRunLoop(self):
 		while self.autoRunSign:
 			self.moveHandle(random.randint(0, 3))
+			#time.sleep(0.001)
+
+	def aiRunHandle(self):
+		self.aiRunSign = not self.aiRunSign
+		if self.aiRunSign:
+			tempThreading = threading.Thread(target=self.aiRunLoop)
+			tempThreading.start()
+
+	def aiRunLoop(self):
+		while self.aiRunSign:
+			tempBest = SimpleAI(size=self.size,randBaseValue=self.randBaseValue,gridObject=self.game.grid).getBest()
+			if tempBest == None:
+				break
+			self.moveHandle(tempBest['direction'])
 			#time.sleep(0.001)
 
 	def autoRunStopHandle(self):

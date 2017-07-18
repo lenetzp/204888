@@ -133,6 +133,9 @@ class GUI(Frame):
         if event.keycode == 65:
             self.handleObject['autoRun']()
             return
+        if event.keycode == 73:
+            self.handleObject['aiRun']()
+            return
         try:
             keyList.index(event.keycode)
         except:

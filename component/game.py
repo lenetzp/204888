@@ -23,6 +23,6 @@ class Game():
 		return {'randAdd':tempAddData,'isEnd':tempMoveData['isEnd']}
 
 	def init(self):
-		self.grid = Grid(self.size,getEmptyArray(self.size),randBaseValue=self.randBaseValue)
+		self.grid = Grid(self.size,randBaseValue=self.randBaseValue)
 		self.grid.randAdd()
 		self.grid.randAdd()

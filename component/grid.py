@@ -1,6 +1,10 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 import random
+import math
+
+def getLevel(value,randBaseValue=2):
+	return (math.log(value/randBaseValue)/math.log(2) + 1)
 
 def getEmptyArray(size):
 	cells = []
@@ -24,6 +28,12 @@ def transitionCoordinate(x,y,direction,size):
 		2:{'x':x,'y':size-y},
 		3:{'x':y,'y':x}
 	}[direction]
+
+def getDirection():
+	return [0,1,2,3]
+
+def getDirectionDict():
+	return {0:{'x':0,'y':1},1:{'x':1,'y':0},2:{'x':0,'y':-1},3:{'x':-1,'y':0}}
 
 def traversalCells(data,size,callback=None,direction=0):
 	cells = getEmptyArray(size)
@@ -51,7 +61,7 @@ class Grid():
 	def __init__(self,size=4,perGridObject=None,randBaseValue=2):
 		self.size = size;
 		self.randBaseValue = randBaseValue
-		self.cells = self.fromState(perGridObject) if perGridObject else self.empty();
+		self.cells = self.fromState(perGridObject) if perGridObject != None else getEmptyArray(self.size);
 
 	def fromState(self,perGridObject):
 		cells = getEmptyArray(self.size)
@@ -60,13 +70,13 @@ class Grid():
 		while keyX < self.size:
 			keyY = 0
 			while keyY < self.size:
-				cells[keyX][keyY] = perGridObject[keyX][keyY]
+				cells[keyX][keyY] = perGridObject.cells[keyX][keyY]
 				keyY += 1
 			keyX += 1
 		return cells
 
-	def empty(self):
-		return getEmptyArray(self.size)
+	# def empty(self):
+	# 	return getEmptyArray(self.size)
 
 	def randAdd(self):
 		def callback(data):

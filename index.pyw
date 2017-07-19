@@ -14,7 +14,15 @@ class application():
 		self.game = Game(size=self.size,randBaseValue=self.randBaseValue)
 		self.autoRunSign = False
 		self.aiRunSign = False
-		self.gui = GUI(size=self.size,handleObject={'restart':self.restartHandle,'move':self.moveHandle,'autoRun':self.autoRunHandle,'autoRunStop':self.autoRunStopHandle,'aiRun':self.aiRunHandle})
+		self.gui = GUI(size=self.size,handleObject={
+			'restart':self.restartHandle,
+			'move':self.moveHandle,
+			'autoRun':self.autoRunHandle,
+			'autoRunStop':self.autoRunStopHandle,
+			'aiRunStopHandle':self.aiRunStopHandle,
+			'aiRun':self.aiRunHandle,
+			'quit':self.quitHandle
+		})
 
 	def moveHandle(self,direction):
 		moveResult = self.game.move(direction)
@@ -24,9 +32,14 @@ class application():
 		self.game.restart()
 		self.gui.draw(self.game.grid.cells)
 
+	def quitHandle(self):
+		self.aiRunSign = False
+		self.autoRunSign = False
+
 	def autoRunHandle(self):
 		self.autoRunSign = not self.autoRunSign
 		if self.autoRunSign:
+			self.aiRunSign = False
 			tempThreading = threading.Thread(target=self.autoRunLoop)
 			tempThreading.start()
 
@@ -38,6 +51,7 @@ class application():
 	def aiRunHandle(self):
 		self.aiRunSign = not self.aiRunSign
 		if self.aiRunSign:
+			self.autoRunSign = False
 			tempThreading = threading.Thread(target=self.aiRunLoop)
 			tempThreading.start()
 
@@ -45,12 +59,16 @@ class application():
 		while self.aiRunSign:
 			tempBest = SimpleAI(size=self.size,randBaseValue=self.randBaseValue,gridObject=self.game.grid).getBest()
 			if tempBest == None:
+				self.aiRunSign = False
 				break
 			self.moveHandle(tempBest['direction'])
 			#time.sleep(0.001)
 
 	def autoRunStopHandle(self):
 		self.autoRunSign = False
+
+	def aiRunStopHandle(self):
+		self.aiRunSign = False
 
 	def run(self):
 		self.gui.draw(self.game.grid.cells)

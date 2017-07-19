@@ -121,7 +121,7 @@ class GUI(Frame):
     def keyHandle(self,event):
         #print(event.keycode)
         if event.keycode == 27:
-            self.handleObject['autoRunStop']()
+            self.handleObject['quit']()
             sys.exit()
             return
         if event.keycode == 72:

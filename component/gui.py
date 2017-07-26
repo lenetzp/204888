@@ -4,6 +4,7 @@
 import sys
 from tkinter import *
 import tkinter.messagebox as messagebox
+from .grid import getLevel
 
 keyList = [38,39,40,37]
 keyDict = {38:0,39:1,40:2,37:3}
@@ -13,47 +14,47 @@ tileStyleMap = {
     0:{
         'background': '#faf8ef'
     },
-    2:{
+    1:{
         'color': '#776e65',
         'background': '#eee4da'
     },
-    4:{
+    2:{
         'color': '#776e65',
         'background': '#ede0c8'
     },
-    8:{
+    3:{
         'color': '#f9f6f2;',
         'background': '#f2b179'
     },
-    16:{
+    4:{
         'color': '#f9f6f2;',
         'background': '#f59563'
     },
-    32:{
+    5:{
         'color': '#f9f6f2;',
         'background': '#f67c5f'
     },
-    64:{
+    6:{
         'color': '#f9f6f2;',
         'background': '#f65e3b'
     },
-    128:{
+    7:{
         'color': '#f9f6f2;',
         'background': '#edcf72'
     },
-    256:{
+    8:{
         'color': '#f9f6f2;',
         'background': '#edcc61'
     },
-    512:{
+    9:{
         'color': '#f9f6f2;',
         'background': '#edc850'
     },
-    1024:{
+    10:{
         'color': '#f9f6f2;',
         'background': '#edc53f'
     },
-    2048:{
+    11:{
         'color': '#f9f6f2;',
         'background': '#edc22e'
     }
@@ -63,11 +64,12 @@ perCell = 70
 border = 1
 
 class GUI(Frame):
-    def __init__(self,size=4,master=None,handleObject=None):
+    def __init__(self,size=4,master=None,randBaseValue=2,handleObject=None):
         Frame.__init__(self, master)
         self.size = size
         self.handleObject = handleObject
         self.width = self.size * perCell
+        self.randBaseValue = randBaseValue
         self.pack()
         self.master.geometry(str(int(self.width)) + 'x' + str(int(self.width)))
         self.master.background = '#776e65'
@@ -86,9 +88,9 @@ class GUI(Frame):
     def displayString(self,x,y,value):
         styleObject = None
         if value > 2048:
-            styleObject = tileStyleMap[2048]
+            styleObject = tileStyleMap[11]
         else:
-            styleObject = tileStyleMap[value]
+            styleObject = tileStyleMap[(getLevel(value,randBaseValue=self.randBaseValue) if value != 0 else 0)]
         rectparam = x * perCell + border,y * perCell + border,x * perCell + perCell - border,y * perCell + perCell - border
         self.canvas.create_rectangle(rectparam,tags = "rect",fill=styleObject['background'],width=0)
         if value > 0:

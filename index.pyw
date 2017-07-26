@@ -14,7 +14,7 @@ class application():
 		self.game = Game(size=self.size,randBaseValue=self.randBaseValue)
 		self.autoRunSign = False
 		self.aiRunSign = False
-		self.gui = GUI(size=self.size,handleObject={
+		self.gui = GUI(size=self.size,randBaseValue=self.randBaseValue,handleObject={
 			'restart':self.restartHandle,
 			'move':self.moveHandle,
 			'autoRun':self.autoRunHandle,

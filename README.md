@@ -17,7 +17,7 @@ use this in cmd
 
 3 is base number
 
-don't move ur mouse over here => <span style="cursor: default;color: #9E9E9E;background-color: #9E9E9E;-webkit-touch-callout: none;-webkit-user-select: none;-khtml-user-select: none;-moz-user-select: none;-ms-user-select: none;user-select: none;" onmouseover="this.style.color = '#fff';" onmouseleave="this.style.color = '#9E9E9E';">&nbsp;press 'a' for auto random run , 'i' for simpleAI run&nbsp;</span>
+<span style="cursor: default;color: #9E9E9E;background-color: #9E9E9E;-webkit-touch-callout: none;-webkit-user-select: none;-khtml-user-select: none;-moz-user-select: none;-ms-user-select: none;user-select: none;" onmouseover="this.style.color = '#fff';" onmouseleave="this.style.color = '#9E9E9E';">&nbsp;when running , press 'a' for auto random run , 'i' for simpleAI run&nbsp;</span>
 
 ## thanks
 

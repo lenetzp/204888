@@ -1,13 +1,13 @@
 # 204888
 python 2048
 
-##Usage
+## Usage
 
 just run index.pyw
 
 press 'h' key for help
 
-##special
+## special
 
 use this in cmd
 
@@ -19,6 +19,6 @@ use this in cmd
 
 don't move ur mouse over here => <span style="cursor: default;color: #9E9E9E;background-color: #9E9E9E;-webkit-touch-callout: none;-webkit-user-select: none;-khtml-user-select: none;-moz-user-select: none;-ms-user-select: none;user-select: none;" onmouseover="this.style.color = '#fff';" onmouseleave="this.style.color = '#9E9E9E';">&nbsp;press 'a' for auto random run , 'i' for simpleAI run&nbsp;</span>
 
-##thanks
+## thanks
 
 木禾子 for python develop support

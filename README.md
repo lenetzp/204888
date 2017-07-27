@@ -27,4 +27,4 @@ use this in cmd
 
 blogger 张洋 [ai article](http://blog.codinglabs.org/articles/2048-ai-analysis.html)
 
-and most important support form 小丽子
+and most important support from 小丽子

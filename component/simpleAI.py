@@ -166,10 +166,10 @@ def getEmpty(gridObject):
 def getScoreOfGrid(gridObject,monotonicity3DirectionData):
 	emptyCells = len(getEmpty(gridObject))
 	smoothWeight = 0.1
-	mono2Weight = 1.1
+	mono2Weight = 1.3
 	emptyWeight = 2.7
 	maxWeight = 1.0
-	mono3Weight = 0.3
+	mono3Weight = 0.1
 	valueArray = []
 	finalValue = 0
 	valueArray.append(float(smoothness(gridObject)) * smoothWeight)

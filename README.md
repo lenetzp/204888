@@ -1,6 +1,8 @@
 # 204888
 python 2048
 
+[中文说明](http://writegamehouse.com/simple/204888.html)
+
 ## Usage
 
 just run index.pyw

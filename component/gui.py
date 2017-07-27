@@ -5,6 +5,7 @@ import sys
 from tkinter import *
 import tkinter.messagebox as messagebox
 from .grid import getLevel
+from .other import getCellName
 
 keyList = [38,39,40,37]
 keyDict = {38:0,39:1,40:2,37:3}
@@ -87,23 +88,30 @@ class GUI(Frame):
 
     def displayString(self,x,y,value):
         styleObject = None
-        if value > 2048:
+        level = (getLevel(value,randBaseValue=self.randBaseValue) if value != 0 else 0)
+        if level > 11:
             styleObject = tileStyleMap[11]
         else:
-            styleObject = tileStyleMap[(getLevel(value,randBaseValue=self.randBaseValue) if value != 0 else 0)]
+            styleObject = tileStyleMap[level]
         rectparam = x * perCell + border,y * perCell + border,x * perCell + perCell - border,y * perCell + perCell - border
         self.canvas.create_rectangle(rectparam,tags = "rect",fill=styleObject['background'],width=0)
         if value > 0:
             showValue = value
-            if value > 1073741824:
-                showValue = (str(int(value / 1073741824)) + 'G')
+            if value >= 1099511627776:
+                showValue = (str(int(value / 1099511627776)) + 'T')
             else:
-                if value > 1048576:
-                    showValue = (str(int(value / 1048576)) + 'M')
+                if value >= 1073741824:
+                    showValue = (str(int(value / 1073741824)) + 'G')
                 else:
-                    if value >= 16384:
-                        showValue = (str(int(value / 1024)) + 'K')
-            self.canvas.create_text(x * perCell + (perCell/2),y * perCell + (perCell/2),text=showValue, font = ("微软雅黑 "+str(int(perCell/4 if value > 64 else perCell/3))+" bold"),fill=styleObject['color'], tags = "cell")
+                    if value >= 1048576:
+                        showValue = (str(int(value / 1048576)) + 'M')
+                    else:
+                        if value >= 16384:
+                            showValue = (str(int(value / 1024)) + 'K')
+            tempName = getCellName(level)
+            tempName = (tempName if tempName != 0 else str(showValue))
+            fontSize = str(int((perCell/5 if len(tempName) < 5 else perCell/6) if len(tempName) > 2 else perCell/4))
+            self.canvas.create_text(x * perCell + (perCell/2),y * perCell + (perCell/2),text=tempName, font = ("微软雅黑 " + fontSize + " bold"),fill=styleObject['color'], tags = "cell")
 
     def displayClear(self):
         self.canvas.delete("cell","rect")

@@ -1,7 +1,7 @@
 # 204888
 python 2048
 
-[中文说明](http://writegamehouse.com/simple/204888.html)
+[中文说明](http://www.writegamehouse.com/#/app/204888)
 
 ## Usage
 
